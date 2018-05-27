@@ -1,0 +1,16 @@
+{
+  "root": true,
+  "extends": ["./node_modules/sanctuary-style/eslint-es3.json"],
+  "overrides": [
+    {
+      "files": ["*.md"],
+      "globals": {"$": false, "Just": false, "Maybe": false, "Nothing": false, "S": false, "Z": false, "show": false, "type": false}
+    },
+    {
+      "files": ["index.js"],
+      "rules": {
+        "no-unused-vars": ["error", {"vars": "all", "varsIgnorePattern": "^S$", "args": "none"}]
+      }
+    }
+  ]
+}
