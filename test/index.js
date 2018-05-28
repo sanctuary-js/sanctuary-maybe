@@ -42,6 +42,7 @@ const parseFloat_ = s => Z.reject (isNaN, Just (parseFloat (s)));
 //    testLaws :: Object -> Object -> Undefined
 const testLaws = laws => arbs => {
   (Object.keys (laws)).forEach (name => {
+    eq (laws[name].length) (arbs[name].length);
     test (name.replace (/[A-Z]/g, c => ' ' + c.toLowerCase ()),
           laws[name] (...arbs[name]));
   });
@@ -244,7 +245,6 @@ suite ('Ord laws', () => {
       MaybeArb (jsc.string),
     ],
     antisymmetry: [
-      MaybeArb (jsc.string),
       MaybeArb (jsc.string),
       MaybeArb (jsc.string),
     ],
