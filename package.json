@@ -15,14 +15,14 @@
   ],
   "dependencies": {
     "sanctuary-show": "1.0.x",
-    "sanctuary-type-classes": "9.0.0"
+    "sanctuary-type-classes": "10.0.0"
   },
   "devDependencies": {
     "fantasy-land": "3.5.0",
     "fantasy-laws": "1.2.x",
     "jsverify": "0.8.x",
     "sanctuary": "0.14.1",
-    "sanctuary-def": "0.17.x",
+    "sanctuary-def": "0.19.x",
     "sanctuary-either": "1.0.x",
     "sanctuary-identity": "1.0.x",
     "sanctuary-scripts": "2.0.x",
