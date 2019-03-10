@@ -114,7 +114,7 @@
   //. .             (Z[k].test (Just (Useless)) ? '\u2705   ' :
   //. .              Z[k].test (Nothing)        ? '\u2705 * ' :
   //. .              /* otherwise */              '\u274C   '))
-  //. .       (S.keys (Z.filter ($.test ([]) ($.TypeClass), Z)))
+  //. .       (S.keys (S.unchecked.filter (S.is ($.TypeClass)) (Z)))
   //. [ 'Setoid          ✅ * ',  // if ‘a’ satisfies Setoid
   //. . 'Ord             ✅ * ',  // if ‘a’ satisfies Ord
   //. . 'Semigroupoid    ❌   ',
@@ -355,13 +355,13 @@
   //.     `p (x) ? Just (x) : Nothing`
   //.
   //. ```javascript
-  //. > S.filterM (isFinite) (Nothing)
+  //. > S.filter (isFinite) (Nothing)
   //. Nothing
   //.
-  //. > S.filterM (isFinite) (Just (Infinity))
+  //. > S.filter (isFinite) (Just (Infinity))
   //. Nothing
   //.
-  //. > S.filterM (isFinite) (Just (Number.MAX_SAFE_INTEGER))
+  //. > S.filter (isFinite) (Just (Number.MAX_SAFE_INTEGER))
   //. Just (9007199254740991)
   //. ```
   function Nothing$prototype$filter(pred) {
