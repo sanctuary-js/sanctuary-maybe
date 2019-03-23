@@ -350,9 +350,8 @@
 
   //# Maybe#fantasy-land/filter :: Maybe a ~> (a -> Boolean) -> Maybe a
   //.
-  //.   - `filterM (p) (Nothing)` is equivalent to `Nothing`
-  //.   - `filterM (p) (Just (x))` is equivalent to
-  //.     `p (x) ? Just (x) : Nothing`
+  //.   - `filter (p) (Nothing)` is equivalent to `Nothing`
+  //.   - `filter (p) (Just (x))` is equivalent to `p (x) ? Just (x) : Nothing`
   //.
   //. ```javascript
   //. > S.filter (isFinite) (Nothing)
