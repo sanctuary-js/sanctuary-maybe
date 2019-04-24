@@ -45,9 +45,10 @@
     /* eslint-disable no-unused-vars */
     var S = __doctest.require ('sanctuary');
     var $ = __doctest.require ('sanctuary-def');
-    var type = __doctest.require ('sanctuary-type-identifiers');
     /* eslint-enable no-unused-vars */
   }
+
+  var maybeTypeIdent = 'sanctuary-maybe/Maybe@1';
 
   var Maybe = {};
 
@@ -56,6 +57,7 @@
     'constructor':            Maybe,
     'isNothing':              true,
     'isJust':                 false,
+    '@@type':                 maybeTypeIdent,
     '@@show':                 Nothing$prototype$show,
     'fantasy-land/equals':    Nothing$prototype$equals,
     'fantasy-land/lte':       Nothing$prototype$lte,
@@ -76,6 +78,7 @@
     'constructor':            Maybe,
     'isNothing':              false,
     'isJust':                 true,
+    '@@type':                 maybeTypeIdent,
     '@@show':                 Just$prototype$show,
     'fantasy-land/filter':    Just$prototype$filter,
     'fantasy-land/map':       Just$prototype$map,
@@ -170,19 +173,6 @@
     just.value = value;
     return just;
   };
-
-  //# Maybe.@@type :: String
-  //.
-  //. Maybe [type identifier][].
-  //.
-  //. ```javascript
-  //. > type (Just (42))
-  //. 'sanctuary-maybe/Maybe@1'
-  //.
-  //. > type.parse (type (Just (42)))
-  //. {namespace: 'sanctuary-maybe', name: 'Maybe', version: 1}
-  //. ```
-  Maybe['@@type'] = 'sanctuary-maybe/Maybe@1';
 
   //# Maybe.fantasy-land/empty :: () -> Maybe a
   //.

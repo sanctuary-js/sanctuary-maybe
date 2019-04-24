@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "sanctuary-show": "1.0.x",
-    "sanctuary-type-classes": "11.0.0"
+    "sanctuary-type-classes": "sanctuary-js/sanctuary-type-classes#d31f3c6c126b5c3b7726772bddc10475c468db2e"
   },
   "devDependencies": {
     "fantasy-land": "4.0.1",
@@ -26,8 +26,8 @@
     "sanctuary-either": "1.2.x",
     "sanctuary-identity": "1.2.x",
     "sanctuary-scripts": "3.2.x",
-    "sanctuary-type-identifiers": "2.0.1",
-    "sanctuary-useless": "1.1.x"
+    "sanctuary-type-identifiers": "sanctuary-js/sanctuary-type-identifiers#c947f9f916bae64ba5efffe46c34922131302e3d",
+    "sanctuary-useless": "sanctuary-js/sanctuary-useless#f14c7a31ca882e4f239fb12cb3a621aa148eb85a"
   },
   "scripts": {
     "doctest": "sanctuary-doctest",

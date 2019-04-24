@@ -4,7 +4,7 @@
   "overrides": [
     {
       "files": ["*.md"],
-      "globals": {"$": false, "Just": false, "Maybe": false, "Nothing": false, "S": false, "Z": false, "show": false, "type": false}
+      "globals": {"$": false, "Just": false, "Maybe": false, "Nothing": false, "S": false, "Z": false, "show": false}
     },
     {
       "files": ["index.js"],
