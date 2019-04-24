@@ -47,7 +47,12 @@
     var $ = __doctest.require ('sanctuary-def');
     var type = __doctest.require ('sanctuary-type-identifiers');
     /* eslint-enable no-unused-vars */
+    S.empty = S.unchecked.empty;
+    S.of = S.unchecked.of;
+    S.zero = S.unchecked.zero;
   }
+
+  var maybeTypeIdent = 'sanctuary-maybe/Maybe@1';
 
   var Maybe = {};
 
@@ -56,6 +61,7 @@
     'constructor':            Maybe,
     'isNothing':              true,
     'isJust':                 false,
+    '@@type':                 maybeTypeIdent,
     '@@show':                 Nothing$prototype$show,
     'fantasy-land/equals':    Nothing$prototype$equals,
     'fantasy-land/lte':       Nothing$prototype$lte,
@@ -76,6 +82,7 @@
     'constructor':            Maybe,
     'isNothing':              false,
     'isJust':                 true,
+    '@@type':                 maybeTypeIdent,
     '@@show':                 Just$prototype$show,
     'fantasy-land/filter':    Just$prototype$filter,
     'fantasy-land/map':       Just$prototype$map,
@@ -103,11 +110,14 @@
   //. ```javascript
   //. > const Useless = require ('sanctuary-useless')
   //.
+  //. > const isTypeClass = x =>
+  //. .   type (x) === 'sanctuary-type-classes/TypeClass@1'
+  //.
   //. > S.map (k => k + ' '.repeat (16 - k.length) +
   //. .             (Z[k].test (Just (Useless)) ? '\u2705   ' :
   //. .              Z[k].test (Nothing)        ? '\u2705 * ' :
   //. .              /* otherwise */              '\u274C   '))
-  //. .       (S.keys (S.unchecked.filter (S.is ($.TypeClass)) (Z)))
+  //. .       (S.keys (S.unchecked.filter (isTypeClass) (Z)))
   //. [ 'Setoid          ✅ * ',  // if ‘a’ satisfies Setoid
   //. . 'Ord             ✅ * ',  // if ‘a’ satisfies Ord
   //. . 'Semigroupoid    ❌   ',
@@ -170,19 +180,6 @@
     just.value = value;
     return just;
   };
-
-  //# Maybe.@@type :: String
-  //.
-  //. Maybe [type identifier][].
-  //.
-  //. ```javascript
-  //. > type (Just (42))
-  //. 'sanctuary-maybe/Maybe@1'
-  //.
-  //. > type.parse (type (Just (42)))
-  //. {namespace: 'sanctuary-maybe', name: 'Maybe', version: 1}
-  //. ```
-  Maybe['@@type'] = 'sanctuary-maybe/Maybe@1';
 
   //# Maybe.fantasy-land/empty :: () -> Maybe a
   //.
@@ -525,5 +522,4 @@
 //. [`Z.equals`]:               v:sanctuary-js/sanctuary-type-classes#equals
 //. [`Z.lte`]:                  v:sanctuary-js/sanctuary-type-classes#lte
 //. [iff]:                      https://en.wikipedia.org/wiki/If_and_only_if
-//. [type identifier]:          v:sanctuary-js/sanctuary-type-identifiers
 //. [type representative]:      v:fantasyland/fantasy-land#type-representatives
