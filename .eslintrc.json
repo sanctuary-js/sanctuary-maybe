@@ -9,8 +9,7 @@
     {
       "files": ["index.js"],
       "rules": {
-        "multiline-comment-style": ["off"],
-        "no-unused-vars": ["error", {"vars": "all", "varsIgnorePattern": "^S$", "args": "none"}]
+        "multiline-comment-style": ["off"]
       }
     }
   ]

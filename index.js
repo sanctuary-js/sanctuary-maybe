@@ -42,18 +42,11 @@
 
   /* istanbul ignore if */
   if (typeof __doctest !== 'undefined') {
+    /* eslint-disable no-unused-vars */
+    var S = __doctest.require ('sanctuary');
     var $ = __doctest.require ('sanctuary-def');
     var type = __doctest.require ('sanctuary-type-identifiers');
-    var S = (function() {
-      var S = __doctest.require ('sanctuary');
-      var MaybeType = $.UnaryType
-        ('sanctuary-maybe/Maybe')
-        ('')
-        (function(x) { return type (x) === Maybe['@@type']; })
-        (function(m) { return m.isJust ? [m.value] : []; });
-      var env = Z.concat (S.env, [$.TypeClass, MaybeType ($.Unknown)]);
-      return S.create ({checkTypes: true, env: env});
-    } ());
+    /* eslint-enable no-unused-vars */
   }
 
   var Maybe = {};
@@ -443,21 +436,21 @@
   //# Maybe#fantasy-land/alt :: Maybe a ~> Maybe a -> Maybe a
   //.
   //.   - `alt (Nothing) (Nothing)` is equivalent to `Nothing`
-  //.   - `alt (Nothing) (Just (x))` is equivalent to `Just (x)`
   //.   - `alt (Just (x)) (Nothing)` is equivalent to `Just (x)`
-  //.   - `alt (Just (x)) (Just (y))` is equivalent to `Just (x)`
+  //.   - `alt (Nothing) (Just (x))` is equivalent to `Just (x)`
+  //.   - `alt (Just (y)) (Just (x))` is equivalent to `Just (x)`
   //.
   //. ```javascript
   //. > S.alt (Nothing) (Nothing)
   //. Nothing
   //.
-  //. > S.alt (Nothing) (Just (1))
+  //. > S.alt (Just (1)) (Nothing)
   //. Just (1)
   //.
-  //. > S.alt (Just (2)) (Nothing)
+  //. > S.alt (Nothing) (Just (2))
   //. Just (2)
   //.
-  //. > S.alt (Just (3)) (Just (4))
+  //. > S.alt (Just (4)) (Just (3))
   //. Just (3)
   //. ```
   function Nothing$prototype$alt(other) {
