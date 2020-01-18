@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "sanctuary-show": "2.0.0",
-    "sanctuary-type-classes": "12.0.0"
+    "sanctuary-type-classes": "12.1.0"
   },
   "devDependencies": {
     "fantasy-land": "4.0.1",
