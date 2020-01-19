@@ -44,11 +44,11 @@ either Nothing (the empty value) or a Just whose value is of type `a`.
 . 'Contravariant   ❌   ' ]
 ```
 
-#### <a name="Maybe" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L147">`Maybe :: TypeRep Maybe`</a>
+#### <a name="Maybe" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L147">`Maybe :: TypeRep Maybe`</a>
 
 Maybe [type representative][].
 
-#### <a name="Maybe.Nothing" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L151">`Maybe.Nothing :: Maybe a`</a>
+#### <a name="Maybe.Nothing" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L151">`Maybe.Nothing :: Maybe a`</a>
 
 The empty value of type `Maybe a`.
 
@@ -57,7 +57,7 @@ The empty value of type `Maybe a`.
 Nothing
 ```
 
-#### <a name="Maybe.Just" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L161">`Maybe.Just :: a -⁠> Maybe a`</a>
+#### <a name="Maybe.Just" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L161">`Maybe.Just :: a -⁠> Maybe a`</a>
 
 Constructs a value of type `Maybe a` from a value of type `a`.
 
@@ -66,7 +66,7 @@ Constructs a value of type `Maybe a` from a value of type `a`.
 Just (42)
 ```
 
-#### <a name="Maybe.fantasy-land/empty" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L184">`Maybe.fantasy-land/empty :: () -⁠> Maybe a`</a>
+#### <a name="Maybe.fantasy-land/empty" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L184">`Maybe.fantasy-land/empty :: () -⁠> Maybe a`</a>
 
   - `empty (Maybe)` is equivalent to `Nothing`
 
@@ -75,7 +75,7 @@ Just (42)
 Nothing
 ```
 
-#### <a name="Maybe.fantasy-land/of" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L194">`Maybe.fantasy-land/of :: a -⁠> Maybe a`</a>
+#### <a name="Maybe.fantasy-land/of" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L194">`Maybe.fantasy-land/of :: a -⁠> Maybe a`</a>
 
   - `of (Maybe) (x)` is equivalent to `Just (x)`
 
@@ -84,7 +84,7 @@ Nothing
 Just (42)
 ```
 
-#### <a name="Maybe.fantasy-land/chainRec" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L207">`Maybe.fantasy-land/chainRec :: ((a -⁠> c, b -⁠> c, a) -⁠> Maybe c, a) -⁠> Maybe b`</a>
+#### <a name="Maybe.fantasy-land/chainRec" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L207">`Maybe.fantasy-land/chainRec :: ((a -⁠> c, b -⁠> c, a) -⁠> Maybe c, a) -⁠> Maybe b`</a>
 
 ```javascript
 > Z.chainRec (
@@ -104,7 +104,7 @@ Nothing
 Just (65536)
 ```
 
-#### <a name="Maybe.fantasy-land/zero" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L236">`Maybe.fantasy-land/zero :: () -⁠> Maybe a`</a>
+#### <a name="Maybe.fantasy-land/zero" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L236">`Maybe.fantasy-land/zero :: () -⁠> Maybe a`</a>
 
   - `zero (Maybe)` is equivalent to `Nothing`
 
@@ -113,7 +113,7 @@ Just (65536)
 Nothing
 ```
 
-#### <a name="Maybe.prototype.@@show" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L246">`Maybe#@@show :: Showable a => Maybe a ~> () -⁠> String`</a>
+#### <a name="Maybe.prototype.@@show" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L246">`Maybe#@@show :: Showable a => Maybe a ~> () -⁠> String`</a>
 
   - `show (Nothing)` is equivalent to `'Nothing'`
   - `show (Just (x))` is equivalent to `'Just (' + show (x) + ')'`
@@ -126,7 +126,7 @@ Nothing
 'Just (["foo", "bar", "baz"])'
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/equals" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L265">`Maybe#fantasy-land/equals :: Setoid a => Maybe a ~> Maybe a -⁠> Boolean`</a>
+#### <a name="Maybe.prototype.fantasy-land/equals" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L265">`Maybe#fantasy-land/equals :: Setoid a => Maybe a ~> Maybe a -⁠> Boolean`</a>
 
   - `Nothing` is equal to `Nothing`
   - `Just (x)` is equal to `Just (y)` [iff][] `x` is equal to `y`
@@ -147,7 +147,7 @@ false
 false
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/lte" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L292">`Maybe#fantasy-land/lte :: Ord a => Maybe a ~> Maybe a -⁠> Boolean`</a>
+#### <a name="Maybe.prototype.fantasy-land/lte" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L292">`Maybe#fantasy-land/lte :: Ord a => Maybe a ~> Maybe a -⁠> Boolean`</a>
 
   - `Nothing` is (less than or) equal to `Nothing`
   - `Just (x)` is less than or equal to `Just (y)` [iff][] `x` is less
@@ -162,7 +162,7 @@ false
 [Nothing, Just (0), Just (1)]
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/concat" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L313">`Maybe#fantasy-land/concat :: Semigroup a => Maybe a ~> Maybe a -⁠> Maybe a`</a>
+#### <a name="Maybe.prototype.fantasy-land/concat" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L313">`Maybe#fantasy-land/concat :: Semigroup a => Maybe a ~> Maybe a -⁠> Maybe a`</a>
 
   - `concat (Nothing) (Nothing)` is equivalent to `Nothing`
   - `concat (Just (x)) (Just (y))` is equivalent to
@@ -184,7 +184,7 @@ Just ([1, 2, 3])
 Just ([1, 2, 3])
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/filter" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L341">`Maybe#fantasy-land/filter :: Maybe a ~> (a -⁠> Boolean) -⁠> Maybe a`</a>
+#### <a name="Maybe.prototype.fantasy-land/filter" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L341">`Maybe#fantasy-land/filter :: Maybe a ~> (a -⁠> Boolean) -⁠> Maybe a`</a>
 
   - `filter (p) (Nothing)` is equivalent to `Nothing`
   - `filter (p) (Just (x))` is equivalent to `p (x) ? Just (x) : Nothing`
@@ -200,7 +200,7 @@ Nothing
 Just (9007199254740991)
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/map" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L363">`Maybe#fantasy-land/map :: Maybe a ~> (a -⁠> b) -⁠> Maybe b`</a>
+#### <a name="Maybe.prototype.fantasy-land/map" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L363">`Maybe#fantasy-land/map :: Maybe a ~> (a -⁠> b) -⁠> Maybe b`</a>
 
   - `map (f) (Nothing)` is equivalent to `Nothing`
   - `map (f) (Just (x))` is equivalent to `Just (f (x))`
@@ -213,7 +213,7 @@ Nothing
 Just (3)
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/ap" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L382">`Maybe#fantasy-land/ap :: Maybe a ~> Maybe (a -⁠> b) -⁠> Maybe b`</a>
+#### <a name="Maybe.prototype.fantasy-land/ap" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L382">`Maybe#fantasy-land/ap :: Maybe a ~> Maybe (a -⁠> b) -⁠> Maybe b`</a>
 
   - `ap (Nothing) (Nothing)` is equivalent to `Nothing`
   - `ap (Nothing) (Just (x))` is equivalent to `Nothing`
@@ -234,7 +234,7 @@ Nothing
 Just (3)
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/chain" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L409">`Maybe#fantasy-land/chain :: Maybe a ~> (a -⁠> Maybe b) -⁠> Maybe b`</a>
+#### <a name="Maybe.prototype.fantasy-land/chain" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L409">`Maybe#fantasy-land/chain :: Maybe a ~> (a -⁠> Maybe b) -⁠> Maybe b`</a>
 
   - `chain (f) (Nothing)` is equivalent to `Nothing`
   - `chain (f) (Just (x))` is equivalent to `f (x)`
@@ -252,7 +252,7 @@ Nothing
 Just ('foo')
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/alt" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L433">`Maybe#fantasy-land/alt :: Maybe a ~> Maybe a -⁠> Maybe a`</a>
+#### <a name="Maybe.prototype.fantasy-land/alt" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L433">`Maybe#fantasy-land/alt :: Maybe a ~> Maybe a -⁠> Maybe a`</a>
 
   - `alt (Nothing) (Nothing)` is equivalent to `Nothing`
   - `alt (Just (x)) (Nothing)` is equivalent to `Just (x)`
@@ -273,7 +273,7 @@ Just (2)
 Just (3)
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/reduce" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L460">`Maybe#fantasy-land/reduce :: Maybe a ~> ((b, a) -⁠> b, b) -⁠> b`</a>
+#### <a name="Maybe.prototype.fantasy-land/reduce" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L460">`Maybe#fantasy-land/reduce :: Maybe a ~> ((b, a) -⁠> b, b) -⁠> b`</a>
 
   - `reduce (f) (x) (Nothing)` is equivalent to `x`
   - `reduce (f) (x) (Just (y))` is equivalent to `f (x) (y)`
@@ -286,7 +286,7 @@ Just (3)
 'abcxyz'
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/traverse" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L479">`Maybe#fantasy-land/traverse :: Applicative f => Maybe a ~> (TypeRep f, a -⁠> f b) -⁠> f (Maybe b)`</a>
+#### <a name="Maybe.prototype.fantasy-land/traverse" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L479">`Maybe#fantasy-land/traverse :: Applicative f => Maybe a ~> (TypeRep f, a -⁠> f b) -⁠> f (Maybe b)`</a>
 
   - `traverse (A) (f) (Nothing)` is equivalent to `of (A) (Nothing)`
   - `traverse (A) (f) (Just (x))` is equivalent to `map (Just) (f (x))`
@@ -299,7 +299,7 @@ Just (3)
 [Just ('foo'), Just ('bar'), Just ('baz')]
 ```
 
-#### <a name="Maybe.prototype.fantasy-land/extend" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.0.0/index.js#L498">`Maybe#fantasy-land/extend :: Maybe a ~> (Maybe a -⁠> b) -⁠> Maybe b`</a>
+#### <a name="Maybe.prototype.fantasy-land/extend" href="https://github.com/sanctuary-js/sanctuary-maybe/blob/v2.1.0/index.js#L498">`Maybe#fantasy-land/extend :: Maybe a ~> (Maybe a -⁠> b) -⁠> Maybe b`</a>
 
   - `extend (f) (Nothing)` is equivalent to `Nothing`
   - `extend (f) (Just (x))` is equivalent to `Just (f (Just (x)))`
@@ -313,7 +313,7 @@ Just (100)
 ```
 
 [Fantasy Land]:             https://github.com/fantasyland/fantasy-land/tree/v4.0.1
-[`Z.equals`]:               https://github.com/sanctuary-js/sanctuary-type-classes/tree/v12.0.0#equals
-[`Z.lte`]:                  https://github.com/sanctuary-js/sanctuary-type-classes/tree/v12.0.0#lte
+[`Z.equals`]:               https://github.com/sanctuary-js/sanctuary-type-classes/tree/v12.1.0#equals
+[`Z.lte`]:                  https://github.com/sanctuary-js/sanctuary-type-classes/tree/v12.1.0#lte
 [iff]:                      https://en.wikipedia.org/wiki/If_and_only_if
 [type representative]:      https://github.com/fantasyland/fantasy-land/tree/v4.0.1#type-representatives
