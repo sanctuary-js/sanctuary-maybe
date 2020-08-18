@@ -15,11 +15,11 @@
 //. The Maybe type represents optional values: a value of type `Maybe a` is
 //. either Nothing (the empty value) or a Just whose value is of type `a`.
 
-(function(f) {
+(f => {
 
   'use strict';
 
-  var util = {inspect: {}};
+  const util = {inspect: {}};
 
   /* istanbul ignore else */
   if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -27,35 +27,31 @@
                         require ('sanctuary-show'),
                         require ('sanctuary-type-classes'));
   } else if (typeof define === 'function' && define.amd != null) {
-    define (['sanctuary-show', 'sanctuary-type-classes'], function(show, Z) {
-      return f (util, show, Z);
-    });
+    define (['sanctuary-show', 'sanctuary-type-classes'],
+            (show, Z) => f (util, show, Z));
   } else {
     self.sanctuaryMaybe = f (util,
                              self.sanctuaryShow,
                              self.sanctuaryTypeClasses);
   }
 
-} (function(util, show, Z) {
+}) ((util, show, Z) => {
 
   'use strict';
 
   /* istanbul ignore if */
   if (typeof __doctest !== 'undefined') {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars, no-var */
     var S = __doctest.require ('sanctuary');
     var $ = __doctest.require ('sanctuary-def');
-    /* eslint-enable no-unused-vars */
-    S.empty = S.unchecked.empty;
-    S.of = S.unchecked.of;
-    S.zero = S.unchecked.zero;
+    /* eslint-enable no-unused-vars, no-var */
   }
 
-  var maybeTypeIdent = 'sanctuary-maybe/Maybe@1';
+  const maybeTypeIdent = 'sanctuary-maybe/Maybe@1';
 
-  var Maybe = {};
+  const Maybe = {};
 
-  var Nothing$prototype = {
+  const Nothing$prototype = {
     /* eslint-disable key-spacing */
     'constructor':            Maybe,
     'isNothing':              true,
@@ -72,11 +68,11 @@
     'fantasy-land/alt':       Nothing$prototype$alt,
     'fantasy-land/reduce':    Nothing$prototype$reduce,
     'fantasy-land/traverse':  Nothing$prototype$traverse,
-    'fantasy-land/extend':    Nothing$prototype$extend
+    'fantasy-land/extend':    Nothing$prototype$extend,
     /* eslint-enable key-spacing */
   };
 
-  var Just$prototype = {
+  const Just$prototype = {
     /* eslint-disable key-spacing */
     'constructor':            Maybe,
     'isNothing':              false,
@@ -90,15 +86,17 @@
     'fantasy-land/alt':       Just$prototype$alt,
     'fantasy-land/reduce':    Just$prototype$reduce,
     'fantasy-land/traverse':  Just$prototype$traverse,
-    'fantasy-land/extend':    Just$prototype$extend
+    'fantasy-land/extend':    Just$prototype$extend,
     /* eslint-enable key-spacing */
   };
 
-  var custom = util.inspect.custom;  // added in Node.js v6.6.0
-  /* istanbul ignore else */
-  if (typeof custom === 'symbol') {
-    Nothing$prototype[custom] = Nothing$prototype$show;
-    Just$prototype[custom] = Just$prototype$show;
+  {
+    const {custom} = util.inspect;  // added in Node.js v6.6.0
+    /* istanbul ignore else */
+    if (typeof custom === 'symbol') {
+      Nothing$prototype[custom] = Nothing$prototype$show;
+      Just$prototype[custom] = Just$prototype$show;
+    }
   }
 
   //. `Maybe a` satisfies the following [Fantasy Land][] specifications:
@@ -149,7 +147,7 @@
   //. > Nothing
   //. Nothing
   //. ```
-  var Nothing = Maybe.Nothing = Object.create (Nothing$prototype);
+  const Nothing = Maybe.Nothing = Object.create (Nothing$prototype);
 
   //# Maybe.Just :: a -> Maybe a
   //.
@@ -159,8 +157,8 @@
   //. > Just (42)
   //. Just (42)
   //. ```
-  var Just = Maybe.Just = function(value) {
-    var just = Object.create (Just$prototype);
+  const Just = Maybe.Just = value => {
+    const just = Object.create (Just$prototype);
     if (Z.Setoid.test (value)) {
       just['fantasy-land/equals'] = Just$prototype$equals;
       if (Z.Ord.test (value)) {
@@ -182,7 +180,7 @@
   //. > S.empty (Maybe)
   //. Nothing
   //. ```
-  Maybe['fantasy-land/empty'] = function() { return Nothing; };
+  Maybe['fantasy-land/empty'] = () => Nothing;
 
   //# Maybe.fantasy-land/of :: a -> Maybe a
   //.
@@ -194,8 +192,8 @@
   //. ```
   Maybe['fantasy-land/of'] = Just;
 
-  function next(x) { return {tag: next, value: x}; }
-  function done(x) { return {tag: done, value: x}; }
+  const next = x => ({tag: next, value: x});
+  const done = x => ({tag: done, value: x});
 
   //# Maybe.fantasy-land/chainRec :: ((a -> c, b -> c, a) -> Maybe c, a) -> Maybe b
   //.
@@ -216,10 +214,10 @@
   //. . )
   //. Just (65536)
   //. ```
-  Maybe['fantasy-land/chainRec'] = function(f, x) {
-    var r = next (x);
+  Maybe['fantasy-land/chainRec'] = (f, x) => {
+    let r = next (x);
     while (r.tag === next) {
-      var maybe = f (next, done, r.value);
+      const maybe = f (next, done, r.value);
       if (maybe.isNothing) return maybe;
       r = maybe.value;
     }
@@ -234,7 +232,7 @@
   //. > S.zero (Maybe)
   //. Nothing
   //. ```
-  Maybe['fantasy-land/zero'] = function() { return Nothing; };
+  Maybe['fantasy-land/zero'] = () => Nothing;
 
   //# Maybe#@@show :: Showable a => Maybe a ~> () -> String
   //.
@@ -509,7 +507,7 @@
 
   return Maybe;
 
-}));
+});
 
 //. [Fantasy Land]:             v:fantasyland/fantasy-land
 //. [`Z.equals`]:               v:sanctuary-js/sanctuary-type-classes#equals
