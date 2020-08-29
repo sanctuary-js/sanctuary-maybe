@@ -94,14 +94,11 @@
     /* eslint-enable key-spacing */
   };
 
-  var custom = util.inspect.custom;
+  var custom = util.inspect.custom;  // added in Node.js v6.6.0
   /* istanbul ignore else */
   if (typeof custom === 'symbol') {
     Nothing$prototype[custom] = Nothing$prototype$show;
     Just$prototype[custom] = Just$prototype$show;
-  } else {
-    Nothing$prototype.inspect = Nothing$prototype$show;
-    Just$prototype.inspect = Just$prototype$show;
   }
 
   //. `Maybe a` satisfies the following [Fantasy Land][] specifications:

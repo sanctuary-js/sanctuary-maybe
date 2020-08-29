@@ -13,6 +13,9 @@
     "/index.js",
     "/package.json"
   ],
+  "engines": {
+    "node": ">=6.6.0"
+  },
   "dependencies": {
     "sanctuary-show": "2.0.0",
     "sanctuary-type-classes": "12.1.0"
