@@ -240,10 +240,10 @@
   //.   - `show (Just (x))` is equivalent to `'Just (' + show (x) + ')'`
   //.
   //. ```javascript
-  //. > show (Nothing)
+  //. > S.show (Nothing)
   //. 'Nothing'
   //.
-  //. > show (Just (['foo', 'bar', 'baz']))
+  //. > S.show (Just (['foo', 'bar', 'baz']))
   //. 'Just (["foo", "bar", "baz"])'
   //. ```
   function Nothing$prototype$show() {
