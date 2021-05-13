@@ -97,6 +97,13 @@
       Nothing$prototype[custom] = Nothing$prototype$show;
       Just$prototype[custom] = Just$prototype$show;
     }
+    /* istanbul ignore if */
+    if (typeof Deno !== 'undefined') {
+      if (Deno != null && typeof Deno.customInspect === 'symbol') {
+        Nothing$prototype[Deno.customInspect] = Nothing$prototype$show;
+        Just$prototype[Deno.customInspect] = Just$prototype$show;
+      }
+    }
   }
 
   //. `Maybe a` satisfies the following [Fantasy Land][] specifications:
