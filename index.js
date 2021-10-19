@@ -19,23 +19,18 @@
 
   'use strict';
 
-  const util = {inspect: {}};
-
   /* istanbul ignore else */
   if (typeof module === 'object' && typeof module.exports === 'object') {
-    module.exports = f (require ('util'),
-                        require ('sanctuary-show'),
+    module.exports = f (require ('sanctuary-show'),
                         require ('sanctuary-type-classes'));
   } else if (typeof define === 'function' && define.amd != null) {
-    define (['sanctuary-show', 'sanctuary-type-classes'],
-            (show, Z) => f (util, show, Z));
+    define (['sanctuary-show', 'sanctuary-type-classes'], f);
   } else {
-    self.sanctuaryMaybe = f (util,
-                             self.sanctuaryShow,
+    self.sanctuaryMaybe = f (self.sanctuaryShow,
                              self.sanctuaryTypeClasses);
   }
 
-}) ((util, show, Z) => {
+}) ((show, Z) => {
 
   'use strict';
 
@@ -90,19 +85,25 @@
     /* eslint-enable key-spacing */
   };
 
-  {
-    const {custom} = util.inspect;  // added in Node.js v6.6.0
-    /* istanbul ignore else */
-    if (typeof custom === 'symbol') {
-      Nothing$prototype[custom] = Nothing$prototype$show;
-      Just$prototype[custom] = Just$prototype$show;
-    }
-    /* istanbul ignore if */
-    if (typeof Deno !== 'undefined') {
-      if (Deno != null && typeof Deno.customInspect === 'symbol') {
-        Nothing$prototype[Deno.customInspect] = Nothing$prototype$show;
-        Just$prototype[Deno.customInspect] = Just$prototype$show;
-      }
+  /* istanbul ignore else */
+  if (
+    typeof process !== 'undefined' &&
+    process != null &&
+    process.versions != null &&
+    process.versions.node != null
+  ) {
+    Nothing$prototype[
+      Symbol.for ('nodejs.util.inspect.custom')  // added in Node.js v10.12.0
+    ] = Nothing$prototype$show;
+    Just$prototype[
+      Symbol.for ('nodejs.util.inspect.custom')  // added in Node.js v10.12.0
+    ] = Just$prototype$show;
+  }
+  /* istanbul ignore if */
+  if (typeof Deno !== 'undefined') {
+    if (Deno != null && typeof Deno.customInspect === 'symbol') {
+      Nothing$prototype[Deno.customInspect] = Nothing$prototype$show;
+      Just$prototype[Deno.customInspect] = Just$prototype$show;
     }
   }
 
