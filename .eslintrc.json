@@ -4,11 +4,11 @@
   "overrides": [
     {
       "files": ["*.md"],
-      "globals": {"$": false, "Just": false, "Maybe": false, "Nothing": false, "S": false, "Z": false}
+      "globals": {"$": "readonly", "Just": "readonly", "Maybe": "readonly", "Nothing": "readonly", "S": "readonly", "Z": "readonly"}
     },
     {
       "files": ["index.js"],
-      "globals": {"Deno": false, "process": false},
+      "globals": {"Deno": "readonly", "process": "readonly"},
       "rules": {
         "multiline-comment-style": ["off"]
       }
