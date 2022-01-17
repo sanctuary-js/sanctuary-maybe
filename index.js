@@ -180,6 +180,22 @@
     return just;
   };
 
+  //# Maybe.maybe :: b -> (a -> b) -> Maybe a -> b
+  //.
+  //. Case-folding function.
+  //.
+  //.   - `maybe (y) (f) (Nothing)` is equivalent to `y`
+  //.   - `maybe (y) (f) (Just (x))` is equivalent to `f (x)`
+  //.
+  //. ```javascript
+  //. > Maybe.maybe ('nothing') (a => 'just:' + a) (Nothing)
+  //. 'nothing'
+  //.
+  //. > Maybe.maybe ('nothing') (a => 'just:' + a) (Just ('foo'))
+  //. 'just:foo'
+  //. ```
+  Maybe.maybe = x => f => m => m.isNothing ? x : f (m.value);
+
   //# Maybe.fantasy-land/empty :: () -> Maybe a
   //.
   //.   - `empty (Maybe)` is equivalent to `Nothing`
