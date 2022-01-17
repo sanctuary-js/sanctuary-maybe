@@ -88,6 +88,17 @@ suite ('Maybe', () => {
     eq (show (Just (Just (Just (-0))))) ('Just (Just (Just (-0)))');
   });
 
+  test ('Maybe.maybe', () => {
+    eq (Maybe.maybe ('Nothing')
+                    (a => 'Just (' + show (a) + ')')
+                    (Nothing))
+       ('Nothing');
+    eq (Maybe.maybe ('Nothing')
+                    (a => 'Just (' + show (a) + ')')
+                    (Just ([1, 2, 3])))
+       ('Just ([1, 2, 3])');
+  });
+
 });
 
 suite ('type-class predicates', () => {
