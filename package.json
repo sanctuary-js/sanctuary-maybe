@@ -17,7 +17,7 @@
     "node": ">=10.12.0"
   },
   "dependencies": {
-    "sanctuary-show": "2.0.0",
+    "sanctuary-show": "3.0.0",
     "sanctuary-type-classes": "13.0.0"
   },
   "devDependencies": {
