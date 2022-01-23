@@ -1,17 +1,15 @@
-'use strict';
+import assert       from 'assert';
 
-const assert        = require ('assert');
+import laws         from 'fantasy-laws';
+import jsc          from 'jsverify';
+import Either       from 'sanctuary-either';
+import Identity     from 'sanctuary-identity';
+import show         from 'sanctuary-show';
+import Z            from 'sanctuary-type-classes';
+import type         from 'sanctuary-type-identifiers';
+import Useless      from 'sanctuary-useless';
 
-const laws          = require ('fantasy-laws');
-const jsc           = require ('jsverify');
-const Either        = require ('sanctuary-either');
-const Identity      = require ('sanctuary-identity');
-const show          = require ('sanctuary-show');
-const Z             = require ('sanctuary-type-classes');
-const type          = require ('sanctuary-type-identifiers');
-const Useless       = require ('sanctuary-useless');
-
-const Maybe         = require ('..');
+import Maybe        from '../index.js';
 
 
 const {Nothing, Just} = Maybe;
