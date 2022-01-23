@@ -12,6 +12,10 @@
       "rules": {
         "multiline-comment-style": ["off"]
       }
+    },
+    {
+      "files": ["test/**/*.js"],
+      "parserOptions": {"ecmaVersion": 2020, "sourceType": "module"}
     }
   ]
 }
