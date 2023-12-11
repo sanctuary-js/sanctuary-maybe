@@ -7,6 +7,11 @@
     "type": "git",
     "url": "git://github.com/sanctuary-js/sanctuary-maybe.git"
   },
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "files": [
     "/LICENSE",
     "/README.md",
@@ -14,7 +19,7 @@
     "/package.json"
   ],
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "dependencies": {
     "sanctuary-show": "3.0.0",

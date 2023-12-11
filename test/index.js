@@ -11,10 +11,7 @@ import Z from 'sanctuary-type-classes';
 import type from 'sanctuary-type-identifiers';
 import Useless from 'sanctuary-useless';
 
-import Maybe from '../index.js';
-
-
-const {Nothing, Just} = Maybe;
+import {Maybe, Nothing, Just, maybe} from '../index.js';
 
 
 //    EitherArb :: Arbitrary a -> Arbitrary b -> Arbitrary (Either a b)
@@ -83,14 +80,14 @@ test ('util.inspect', () => {
   eq (inspect (Just (Just (Just (-0)))), 'Just (Just (Just (-0)))');
 });
 
-test ('Maybe.maybe', () => {
-  eq (Maybe.maybe ('Nothing')
-                  (a => 'Just (' + show (a) + ')')
-                  (Nothing),
+test ('maybe', () => {
+  eq (maybe ('Nothing')
+            (a => 'Just (' + show (a) + ')')
+            (Nothing),
       'Nothing');
-  eq (Maybe.maybe ('Nothing')
-                  (a => 'Just (' + show (a) + ')')
-                  (Just ([1, 2, 3])),
+  eq (maybe ('Nothing')
+            (a => 'Just (' + show (a) + ')')
+            (Just ([1, 2, 3])),
       'Just ([1, 2, 3])');
 });
 

@@ -14,518 +14,494 @@
 //.
 //. The Maybe type represents optional values: a value of type `Maybe a` is
 //. either Nothing (the empty value) or a Just whose value is of type `a`.
+//.
+//. ```javascript
+//. > import S from 'sanctuary'
+//. > import $ from 'sanctuary-def'
+//. > import Useless from 'sanctuary-useless'
+//. ```
 
-(f => {
+import show from 'sanctuary-show';
+import Z from 'sanctuary-type-classes';
 
-  'use strict';
+export {Maybe, Nothing, Just, maybe};
 
-  /* c8 ignore start */
-  if (typeof module === 'object' && typeof module.exports === 'object') {
-    module.exports = f (require ('sanctuary-show'),
-                        require ('sanctuary-type-classes'));
-  } else if (typeof define === 'function' && define.amd != null) {
-    define (['sanctuary-show', 'sanctuary-type-classes'], f);
-  } else {
-    self.sanctuaryMaybe = f (self.sanctuaryShow,
-                             self.sanctuaryTypeClasses);
-  }
-  /* c8 ignore stop */
+const maybeTypeIdent = 'sanctuary-maybe/Maybe@1';
 
-}) ((show, Z) => {
+const Maybe = {};
 
-  'use strict';
+const Nothing$prototype = {
+  /* eslint-disable key-spacing */
+  'constructor':            Maybe,
+  'isNothing':              true,
+  'isJust':                 false,
+  '@@type':                 maybeTypeIdent,
+  '@@show':                 Nothing$prototype$show,
+  'fantasy-land/equals':    Nothing$prototype$equals,
+  'fantasy-land/lte':       Nothing$prototype$lte,
+  'fantasy-land/concat':    Nothing$prototype$concat,
+  'fantasy-land/filter':    Nothing$prototype$filter,
+  'fantasy-land/map':       Nothing$prototype$map,
+  'fantasy-land/ap':        Nothing$prototype$ap,
+  'fantasy-land/chain':     Nothing$prototype$chain,
+  'fantasy-land/alt':       Nothing$prototype$alt,
+  'fantasy-land/reduce':    Nothing$prototype$reduce,
+  'fantasy-land/traverse':  Nothing$prototype$traverse,
+  'fantasy-land/extend':    Nothing$prototype$extend,
+  /* eslint-enable key-spacing */
+};
 
-  /* c8 ignore start */
-  if (typeof __doctest !== 'undefined') {
-    /* eslint-disable no-unused-vars, no-var */
-    var S = __doctest.require ('sanctuary');
-    var $ = __doctest.require ('sanctuary-def');
-    /* eslint-enable no-unused-vars, no-var */
-  }
-  /* c8 ignore stop */
+const Just$prototype = {
+  /* eslint-disable key-spacing */
+  'constructor':            Maybe,
+  'isNothing':              false,
+  'isJust':                 true,
+  '@@type':                 maybeTypeIdent,
+  '@@show':                 Just$prototype$show,
+  'fantasy-land/filter':    Just$prototype$filter,
+  'fantasy-land/map':       Just$prototype$map,
+  'fantasy-land/ap':        Just$prototype$ap,
+  'fantasy-land/chain':     Just$prototype$chain,
+  'fantasy-land/alt':       Just$prototype$alt,
+  'fantasy-land/reduce':    Just$prototype$reduce,
+  'fantasy-land/traverse':  Just$prototype$traverse,
+  'fantasy-land/extend':    Just$prototype$extend,
+  /* eslint-enable key-spacing */
+};
 
-  const maybeTypeIdent = 'sanctuary-maybe/Maybe@1';
+if (globalThis.process?.versions?.node != null) {
+  const inspect = Symbol.for ('nodejs.util.inspect.custom');
+  Nothing$prototype[inspect] = Nothing$prototype$show;
+  Just$prototype[inspect] = Just$prototype$show;
+}
 
-  const Maybe = {};
+/* c8 ignore start */
+if (typeof globalThis.Deno?.customInspect === 'symbol') {
+  const inspect = globalThis.Deno.customInspect;
+  Nothing$prototype[inspect] = Nothing$prototype$show;
+  Just$prototype[inspect] = Just$prototype$show;
+}
+/* c8 ignore stop */
 
-  const Nothing$prototype = {
-    /* eslint-disable key-spacing */
-    'constructor':            Maybe,
-    'isNothing':              true,
-    'isJust':                 false,
-    '@@type':                 maybeTypeIdent,
-    '@@show':                 Nothing$prototype$show,
-    'fantasy-land/equals':    Nothing$prototype$equals,
-    'fantasy-land/lte':       Nothing$prototype$lte,
-    'fantasy-land/concat':    Nothing$prototype$concat,
-    'fantasy-land/filter':    Nothing$prototype$filter,
-    'fantasy-land/map':       Nothing$prototype$map,
-    'fantasy-land/ap':        Nothing$prototype$ap,
-    'fantasy-land/chain':     Nothing$prototype$chain,
-    'fantasy-land/alt':       Nothing$prototype$alt,
-    'fantasy-land/reduce':    Nothing$prototype$reduce,
-    'fantasy-land/traverse':  Nothing$prototype$traverse,
-    'fantasy-land/extend':    Nothing$prototype$extend,
-    /* eslint-enable key-spacing */
-  };
+//. `Maybe a` satisfies the following [Fantasy Land][] specifications:
+//.
+//. ```javascript
+//. > S.map (k => k + ' '.repeat (16 - k.length) +
+//. .             (Z[k].test (Just (Useless)) ? '\u2705   ' :
+//. .              Z[k].test (Nothing)        ? '\u2705 * ' :
+//. .              /* otherwise */              '\u274C   '))
+//. .       (S.keys (S.unchecked.filter (S.is ($.TypeClass)) (Z)))
+//. [ 'Setoid          ✅ * ',  // if ‘a’ satisfies Setoid
+//. . 'Ord             ✅ * ',  // if ‘a’ satisfies Ord
+//. . 'Semigroupoid    ❌   ',
+//. . 'Category        ❌   ',
+//. . 'Semigroup       ✅ * ',  // if ‘a’ satisfies Semigroup
+//. . 'Monoid          ✅ * ',  // if ‘a’ satisfies Semigroup
+//. . 'Group           ❌   ',
+//. . 'Filterable      ✅   ',
+//. . 'Functor         ✅   ',
+//. . 'Bifunctor       ❌   ',
+//. . 'Profunctor      ❌   ',
+//. . 'Apply           ✅   ',
+//. . 'Applicative     ✅   ',
+//. . 'Chain           ✅   ',
+//. . 'ChainRec        ✅   ',
+//. . 'Monad           ✅   ',
+//. . 'Alt             ✅   ',
+//. . 'Plus            ✅   ',
+//. . 'Alternative     ✅   ',
+//. . 'Foldable        ✅   ',
+//. . 'Traversable     ✅   ',
+//. . 'Extend          ✅   ',
+//. . 'Comonad         ❌   ',
+//. . 'Contravariant   ❌   ' ]
+//. ```
 
-  const Just$prototype = {
-    /* eslint-disable key-spacing */
-    'constructor':            Maybe,
-    'isNothing':              false,
-    'isJust':                 true,
-    '@@type':                 maybeTypeIdent,
-    '@@show':                 Just$prototype$show,
-    'fantasy-land/filter':    Just$prototype$filter,
-    'fantasy-land/map':       Just$prototype$map,
-    'fantasy-land/ap':        Just$prototype$ap,
-    'fantasy-land/chain':     Just$prototype$chain,
-    'fantasy-land/alt':       Just$prototype$alt,
-    'fantasy-land/reduce':    Just$prototype$reduce,
-    'fantasy-land/traverse':  Just$prototype$traverse,
-    'fantasy-land/extend':    Just$prototype$extend,
-    /* eslint-enable key-spacing */
-  };
+//# Maybe :: TypeRep Maybe
+//.
+//. Maybe [type representative][].
 
-  if (globalThis.process?.versions?.node != null) {
-    const inspect = Symbol.for ('nodejs.util.inspect.custom');
-    Nothing$prototype[inspect] = Nothing$prototype$show;
-    Just$prototype[inspect] = Just$prototype$show;
-  }
+//# Nothing :: Maybe a
+//.
+//. The empty value of type `Maybe a`.
+//.
+//. ```javascript
+//. > Nothing
+//. Nothing
+//. ```
+const Nothing = Object.create (Nothing$prototype);
 
-  /* c8 ignore start */
-  if (typeof globalThis.Deno?.customInspect === 'symbol') {
-    const inspect = globalThis.Deno.customInspect;
-    Nothing$prototype[inspect] = Nothing$prototype$show;
-    Just$prototype[inspect] = Just$prototype$show;
-  }
-  /* c8 ignore stop */
-
-  //. `Maybe a` satisfies the following [Fantasy Land][] specifications:
-  //.
-  //. ```javascript
-  //. > const Useless = require ('sanctuary-useless')
-  //.
-  //. > S.map (k => k + ' '.repeat (16 - k.length) +
-  //. .             (Z[k].test (Just (Useless)) ? '\u2705   ' :
-  //. .              Z[k].test (Nothing)        ? '\u2705 * ' :
-  //. .              /* otherwise */              '\u274C   '))
-  //. .       (S.keys (S.unchecked.filter (S.is ($.TypeClass)) (Z)))
-  //. [ 'Setoid          ✅ * ',  // if ‘a’ satisfies Setoid
-  //. . 'Ord             ✅ * ',  // if ‘a’ satisfies Ord
-  //. . 'Semigroupoid    ❌   ',
-  //. . 'Category        ❌   ',
-  //. . 'Semigroup       ✅ * ',  // if ‘a’ satisfies Semigroup
-  //. . 'Monoid          ✅ * ',  // if ‘a’ satisfies Semigroup
-  //. . 'Group           ❌   ',
-  //. . 'Filterable      ✅   ',
-  //. . 'Functor         ✅   ',
-  //. . 'Bifunctor       ❌   ',
-  //. . 'Profunctor      ❌   ',
-  //. . 'Apply           ✅   ',
-  //. . 'Applicative     ✅   ',
-  //. . 'Chain           ✅   ',
-  //. . 'ChainRec        ✅   ',
-  //. . 'Monad           ✅   ',
-  //. . 'Alt             ✅   ',
-  //. . 'Plus            ✅   ',
-  //. . 'Alternative     ✅   ',
-  //. . 'Foldable        ✅   ',
-  //. . 'Traversable     ✅   ',
-  //. . 'Extend          ✅   ',
-  //. . 'Comonad         ❌   ',
-  //. . 'Contravariant   ❌   ' ]
-  //. ```
-
-  //# Maybe :: TypeRep Maybe
-  //.
-  //. Maybe [type representative][].
-
-  //# Maybe.Nothing :: Maybe a
-  //.
-  //. The empty value of type `Maybe a`.
-  //.
-  //. ```javascript
-  //. > Nothing
-  //. Nothing
-  //. ```
-  const Nothing = Maybe.Nothing = Object.create (Nothing$prototype);
-
-  //# Maybe.Just :: a -> Maybe a
-  //.
-  //. Constructs a value of type `Maybe a` from a value of type `a`.
-  //.
-  //. ```javascript
-  //. > Just (42)
-  //. Just (42)
-  //. ```
-  const Just = Maybe.Just = value => {
-    const just = Object.create (Just$prototype);
-    if (Z.Setoid.test (value)) {
-      just['fantasy-land/equals'] = Just$prototype$equals;
-      if (Z.Ord.test (value)) {
-        just['fantasy-land/lte'] = Just$prototype$lte;
-      }
+//# Just :: a -> Maybe a
+//.
+//. Constructs a value of type `Maybe a` from a value of type `a`.
+//.
+//. ```javascript
+//. > Just (42)
+//. Just (42)
+//. ```
+const Just = value => {
+  const just = Object.create (Just$prototype);
+  if (Z.Setoid.test (value)) {
+    just['fantasy-land/equals'] = Just$prototype$equals;
+    if (Z.Ord.test (value)) {
+      just['fantasy-land/lte'] = Just$prototype$lte;
     }
-    if (Z.Semigroup.test (value)) {
-      just['fantasy-land/concat'] = Just$prototype$concat;
-    }
-    just.value = value;
-    return just;
-  };
+  }
+  if (Z.Semigroup.test (value)) {
+    just['fantasy-land/concat'] = Just$prototype$concat;
+  }
+  just.value = value;
+  return just;
+};
 
-  //# Maybe.maybe :: b -> (a -> b) -> Maybe a -> b
-  //.
-  //. Case-folding function.
-  //.
-  //.   - `maybe (y) (f) (Nothing)` is equivalent to `y`
-  //.   - `maybe (y) (f) (Just (x))` is equivalent to `f (x)`
-  //.
-  //. ```javascript
-  //. > Maybe.maybe ('nothing') (a => 'just:' + a) (Nothing)
-  //. 'nothing'
-  //.
-  //. > Maybe.maybe ('nothing') (a => 'just:' + a) (Just ('foo'))
-  //. 'just:foo'
-  //. ```
-  Maybe.maybe = x => f => m => m.isNothing ? x : f (m.value);
+//# maybe :: b -> (a -> b) -> Maybe a -> b
+//.
+//. Case-folding function.
+//.
+//.   - `maybe (y) (f) (Nothing)` is equivalent to `y`
+//.   - `maybe (y) (f) (Just (x))` is equivalent to `f (x)`
+//.
+//. ```javascript
+//. > maybe ('nothing') (a => 'just:' + a) (Nothing)
+//. 'nothing'
+//.
+//. > maybe ('nothing') (a => 'just:' + a) (Just ('foo'))
+//. 'just:foo'
+//. ```
+const maybe = x => f => m => m.isNothing ? x : f (m.value);
 
-  //# Maybe.fantasy-land/empty :: () -> Maybe a
-  //.
-  //.   - `empty (Maybe)` is equivalent to `Nothing`
-  //.
-  //. ```javascript
-  //. > S.empty (Maybe)
-  //. Nothing
-  //. ```
-  Maybe['fantasy-land/empty'] = () => Nothing;
+//# Maybe.fantasy-land/empty :: () -> Maybe a
+//.
+//.   - `empty (Maybe)` is equivalent to `Nothing`
+//.
+//. ```javascript
+//. > S.empty (Maybe)
+//. Nothing
+//. ```
+Maybe['fantasy-land/empty'] = () => Nothing;
 
-  //# Maybe.fantasy-land/of :: a -> Maybe a
-  //.
-  //.   - `of (Maybe) (x)` is equivalent to `Just (x)`
-  //.
-  //. ```javascript
-  //. > S.of (Maybe) (42)
-  //. Just (42)
-  //. ```
-  Maybe['fantasy-land/of'] = Just;
+//# Maybe.fantasy-land/of :: a -> Maybe a
+//.
+//.   - `of (Maybe) (x)` is equivalent to `Just (x)`
+//.
+//. ```javascript
+//. > S.of (Maybe) (42)
+//. Just (42)
+//. ```
+Maybe['fantasy-land/of'] = Just;
 
-  const next = x => ({tag: next, value: x});
-  const done = x => ({tag: done, value: x});
+const next = x => ({tag: next, value: x});
+const done = x => ({tag: done, value: x});
 
-  //# Maybe.fantasy-land/chainRec :: ((a -> c, b -> c, a) -> Maybe c, a) -> Maybe b
-  //.
-  //. ```javascript
-  //. > Z.chainRec (
-  //. .   Maybe,
-  //. .   (next, done, x) =>
-  //. .     x <= 1 ? Nothing : Just (x >= 1000 ? done (x) : next (x * x)),
-  //. .   1
-  //. . )
-  //. Nothing
-  //.
-  //. > Z.chainRec (
-  //. .   Maybe,
-  //. .   (next, done, x) =>
-  //. .     x <= 1 ? Nothing : Just (x >= 1000 ? done (x) : next (x * x)),
-  //. .   2
-  //. . )
-  //. Just (65536)
-  //. ```
-  Maybe['fantasy-land/chainRec'] = (f, x) => {
-    let r = next (x);
-    while (r.tag === next) {
-      const maybe = f (next, done, r.value);
-      if (maybe.isNothing) return maybe;
-      r = maybe.value;
-    }
-    return Just (r.value);
-  };
+//# Maybe.fantasy-land/chainRec :: ((a -> c, b -> c, a) -> Maybe c, a) -> Maybe b
+//.
+//. ```javascript
+//. > Z.chainRec (
+//. .   Maybe,
+//. .   (next, done, x) =>
+//. .     x <= 1 ? Nothing : Just (x >= 1000 ? done (x) : next (x * x)),
+//. .   1
+//. . )
+//. Nothing
+//.
+//. > Z.chainRec (
+//. .   Maybe,
+//. .   (next, done, x) =>
+//. .     x <= 1 ? Nothing : Just (x >= 1000 ? done (x) : next (x * x)),
+//. .   2
+//. . )
+//. Just (65536)
+//. ```
+Maybe['fantasy-land/chainRec'] = (f, x) => {
+  let r = next (x);
+  while (r.tag === next) {
+    const maybe = f (next, done, r.value);
+    if (maybe.isNothing) return maybe;
+    r = maybe.value;
+  }
+  return Just (r.value);
+};
 
-  //# Maybe.fantasy-land/zero :: () -> Maybe a
-  //.
-  //.   - `zero (Maybe)` is equivalent to `Nothing`
-  //.
-  //. ```javascript
-  //. > S.zero (Maybe)
-  //. Nothing
-  //. ```
-  Maybe['fantasy-land/zero'] = () => Nothing;
+//# Maybe.fantasy-land/zero :: () -> Maybe a
+//.
+//.   - `zero (Maybe)` is equivalent to `Nothing`
+//.
+//. ```javascript
+//. > S.zero (Maybe)
+//. Nothing
+//. ```
+Maybe['fantasy-land/zero'] = () => Nothing;
 
-  //# Maybe#@@show :: Showable a => Maybe a ~> () -> String
-  //.
-  //.   - `show (Nothing)` is equivalent to `'Nothing'`
-  //.   - `show (Just (x))` is equivalent to `'Just (' + show (x) + ')'`
-  //.
-  //. ```javascript
-  //. > S.show (Nothing)
-  //. 'Nothing'
-  //.
-  //. > S.show (Just (['foo', 'bar', 'baz']))
-  //. 'Just (["foo", "bar", "baz"])'
-  //. ```
-  function Nothing$prototype$show() {
-    return 'Nothing';
-  }
-  function Just$prototype$show() {
-    return 'Just (' + show (this.value) + ')';
-  }
+//# Maybe#@@show :: Showable a => Maybe a ~> () -> String
+//.
+//.   - `show (Nothing)` is equivalent to `'Nothing'`
+//.   - `show (Just (x))` is equivalent to `'Just (' + show (x) + ')'`
+//.
+//. ```javascript
+//. > S.show (Nothing)
+//. 'Nothing'
+//.
+//. > S.show (Just (['foo', 'bar', 'baz']))
+//. 'Just (["foo", "bar", "baz"])'
+//. ```
+function Nothing$prototype$show() {
+  return 'Nothing';
+}
+function Just$prototype$show() {
+  return 'Just (' + show (this.value) + ')';
+}
 
-  //# Maybe#fantasy-land/equals :: Setoid a => Maybe a ~> Maybe a -> Boolean
-  //.
-  //.   - `Nothing` is equal to `Nothing`
-  //.   - `Just (x)` is equal to `Just (y)` [iff][] `x` is equal to `y`
-  //.     according to [`Z.equals`][]
-  //.   - `Nothing` is never equal to `Just (x)`
-  //.
-  //. ```javascript
-  //. > S.equals (Nothing) (Nothing)
-  //. true
-  //.
-  //. > S.equals (Just ([1, 2, 3])) (Just ([1, 2, 3]))
-  //. true
-  //.
-  //. > S.equals (Just ([1, 2, 3])) (Just ([3, 2, 1]))
-  //. false
-  //.
-  //. > S.equals (Just ([1, 2, 3])) (Nothing)
-  //. false
-  //. ```
-  function Nothing$prototype$equals(other) {
-    return other.isNothing;
-  }
-  function Just$prototype$equals(other) {
-    return other.isJust && Z.equals (this.value, other.value);
-  }
+//# Maybe#fantasy-land/equals :: Setoid a => Maybe a ~> Maybe a -> Boolean
+//.
+//.   - `Nothing` is equal to `Nothing`
+//.   - `Just (x)` is equal to `Just (y)` [iff][] `x` is equal to `y`
+//.     according to [`Z.equals`][]
+//.   - `Nothing` is never equal to `Just (x)`
+//.
+//. ```javascript
+//. > S.equals (Nothing) (Nothing)
+//. true
+//.
+//. > S.equals (Just ([1, 2, 3])) (Just ([1, 2, 3]))
+//. true
+//.
+//. > S.equals (Just ([1, 2, 3])) (Just ([3, 2, 1]))
+//. false
+//.
+//. > S.equals (Just ([1, 2, 3])) (Nothing)
+//. false
+//. ```
+function Nothing$prototype$equals(other) {
+  return other.isNothing;
+}
+function Just$prototype$equals(other) {
+  return other.isJust && Z.equals (this.value, other.value);
+}
 
-  //# Maybe#fantasy-land/lte :: Ord a => Maybe a ~> Maybe a -> Boolean
-  //.
-  //.   - `Nothing` is (less than or) equal to `Nothing`
-  //.   - `Just (x)` is less than or equal to `Just (y)` [iff][] `x` is less
-  //.     than or equal to `y` according to [`Z.lte`][]
-  //.   - `Nothing` is always less than `Just (x)`
-  //.
-  //. ```javascript
-  //. > S.filter (S.lte (Nothing)) ([Nothing, Just (0), Just (1), Just (2)])
-  //. [Nothing]
-  //.
-  //. > S.filter (S.lte (Just (1))) ([Nothing, Just (0), Just (1), Just (2)])
-  //. [Nothing, Just (0), Just (1)]
-  //. ```
-  function Nothing$prototype$lte(other) {
-    return true;
-  }
-  function Just$prototype$lte(other) {
-    return other.isJust && Z.lte (this.value, other.value);
-  }
+//# Maybe#fantasy-land/lte :: Ord a => Maybe a ~> Maybe a -> Boolean
+//.
+//.   - `Nothing` is (less than or) equal to `Nothing`
+//.   - `Just (x)` is less than or equal to `Just (y)` [iff][] `x` is less
+//.     than or equal to `y` according to [`Z.lte`][]
+//.   - `Nothing` is always less than `Just (x)`
+//.
+//. ```javascript
+//. > S.filter (S.lte (Nothing)) ([Nothing, Just (0), Just (1), Just (2)])
+//. [Nothing]
+//.
+//. > S.filter (S.lte (Just (1))) ([Nothing, Just (0), Just (1), Just (2)])
+//. [Nothing, Just (0), Just (1)]
+//. ```
+function Nothing$prototype$lte(other) {
+  return true;
+}
+function Just$prototype$lte(other) {
+  return other.isJust && Z.lte (this.value, other.value);
+}
 
-  //# Maybe#fantasy-land/concat :: Semigroup a => Maybe a ~> Maybe a -> Maybe a
-  //.
-  //.   - `concat (Nothing) (Nothing)` is equivalent to `Nothing`
-  //.   - `concat (Just (x)) (Just (y))` is equivalent to
-  //.     `Just (concat (x) (y))`
-  //.   - `concat (Nothing) (Just (x))` is equivalent to `Just (x)`
-  //.   - `concat (Just (x)) (Nothing)` is equivalent to `Just (x)`
-  //.
-  //. ```javascript
-  //. > S.concat (Nothing) (Nothing)
-  //. Nothing
-  //.
-  //. > S.concat (Just ([1, 2, 3])) (Just ([4, 5, 6]))
-  //. Just ([1, 2, 3, 4, 5, 6])
-  //.
-  //. > S.concat (Nothing) (Just ([1, 2, 3]))
-  //. Just ([1, 2, 3])
-  //.
-  //. > S.concat (Just ([1, 2, 3])) (Nothing)
-  //. Just ([1, 2, 3])
-  //. ```
-  function Nothing$prototype$concat(other) {
-    return other;
-  }
-  function Just$prototype$concat(other) {
-    return other.isJust ? Just (Z.concat (this.value, other.value)) : this;
-  }
+//# Maybe#fantasy-land/concat :: Semigroup a => Maybe a ~> Maybe a -> Maybe a
+//.
+//.   - `concat (Nothing) (Nothing)` is equivalent to `Nothing`
+//.   - `concat (Just (x)) (Just (y))` is equivalent to
+//.     `Just (concat (x) (y))`
+//.   - `concat (Nothing) (Just (x))` is equivalent to `Just (x)`
+//.   - `concat (Just (x)) (Nothing)` is equivalent to `Just (x)`
+//.
+//. ```javascript
+//. > S.concat (Nothing) (Nothing)
+//. Nothing
+//.
+//. > S.concat (Just ([1, 2, 3])) (Just ([4, 5, 6]))
+//. Just ([1, 2, 3, 4, 5, 6])
+//.
+//. > S.concat (Nothing) (Just ([1, 2, 3]))
+//. Just ([1, 2, 3])
+//.
+//. > S.concat (Just ([1, 2, 3])) (Nothing)
+//. Just ([1, 2, 3])
+//. ```
+function Nothing$prototype$concat(other) {
+  return other;
+}
+function Just$prototype$concat(other) {
+  return other.isJust ? Just (Z.concat (this.value, other.value)) : this;
+}
 
-  //# Maybe#fantasy-land/filter :: Maybe a ~> (a -> Boolean) -> Maybe a
-  //.
-  //.   - `filter (p) (Nothing)` is equivalent to `Nothing`
-  //.   - `filter (p) (Just (x))` is equivalent to `p (x) ? Just (x) : Nothing`
-  //.
-  //. ```javascript
-  //. > S.filter (isFinite) (Nothing)
-  //. Nothing
-  //.
-  //. > S.filter (isFinite) (Just (Infinity))
-  //. Nothing
-  //.
-  //. > S.filter (isFinite) (Just (Number.MAX_SAFE_INTEGER))
-  //. Just (9007199254740991)
-  //. ```
-  function Nothing$prototype$filter(pred) {
-    return this;
-  }
-  function Just$prototype$filter(pred) {
-    return pred (this.value) ? this : Nothing;
-  }
+//# Maybe#fantasy-land/filter :: Maybe a ~> (a -> Boolean) -> Maybe a
+//.
+//.   - `filter (p) (Nothing)` is equivalent to `Nothing`
+//.   - `filter (p) (Just (x))` is equivalent to `p (x) ? Just (x) : Nothing`
+//.
+//. ```javascript
+//. > S.filter (isFinite) (Nothing)
+//. Nothing
+//.
+//. > S.filter (isFinite) (Just (Infinity))
+//. Nothing
+//.
+//. > S.filter (isFinite) (Just (Number.MAX_SAFE_INTEGER))
+//. Just (9007199254740991)
+//. ```
+function Nothing$prototype$filter(pred) {
+  return this;
+}
+function Just$prototype$filter(pred) {
+  return pred (this.value) ? this : Nothing;
+}
 
-  //# Maybe#fantasy-land/map :: Maybe a ~> (a -> b) -> Maybe b
-  //.
-  //.   - `map (f) (Nothing)` is equivalent to `Nothing`
-  //.   - `map (f) (Just (x))` is equivalent to `Just (f (x))`
-  //.
-  //. ```javascript
-  //. > S.map (Math.sqrt) (Nothing)
-  //. Nothing
-  //.
-  //. > S.map (Math.sqrt) (Just (9))
-  //. Just (3)
-  //. ```
-  function Nothing$prototype$map(f) {
-    return this;
-  }
-  function Just$prototype$map(f) {
-    return Just (f (this.value));
-  }
+//# Maybe#fantasy-land/map :: Maybe a ~> (a -> b) -> Maybe b
+//.
+//.   - `map (f) (Nothing)` is equivalent to `Nothing`
+//.   - `map (f) (Just (x))` is equivalent to `Just (f (x))`
+//.
+//. ```javascript
+//. > S.map (Math.sqrt) (Nothing)
+//. Nothing
+//.
+//. > S.map (Math.sqrt) (Just (9))
+//. Just (3)
+//. ```
+function Nothing$prototype$map(f) {
+  return this;
+}
+function Just$prototype$map(f) {
+  return Just (f (this.value));
+}
 
-  //# Maybe#fantasy-land/ap :: Maybe a ~> Maybe (a -> b) -> Maybe b
-  //.
-  //.   - `ap (Nothing) (Nothing)` is equivalent to `Nothing`
-  //.   - `ap (Nothing) (Just (x))` is equivalent to `Nothing`
-  //.   - `ap (Just (f)) (Nothing)` is equivalent to `Nothing`
-  //.   - `ap (Just (f)) (Just (x))` is equivalent to `Just (f (x))`
-  //.
-  //. ```javascript
-  //. > S.ap (Nothing) (Nothing)
-  //. Nothing
-  //.
-  //. > S.ap (Nothing) (Just (9))
-  //. Nothing
-  //.
-  //. > S.ap (Just (Math.sqrt)) (Nothing)
-  //. Nothing
-  //.
-  //. > S.ap (Just (Math.sqrt)) (Just (9))
-  //. Just (3)
-  //. ```
-  function Nothing$prototype$ap(other) {
-    return this;
-  }
-  function Just$prototype$ap(other) {
-    return other.isJust ? Just (other.value (this.value)) : other;
-  }
+//# Maybe#fantasy-land/ap :: Maybe a ~> Maybe (a -> b) -> Maybe b
+//.
+//.   - `ap (Nothing) (Nothing)` is equivalent to `Nothing`
+//.   - `ap (Nothing) (Just (x))` is equivalent to `Nothing`
+//.   - `ap (Just (f)) (Nothing)` is equivalent to `Nothing`
+//.   - `ap (Just (f)) (Just (x))` is equivalent to `Just (f (x))`
+//.
+//. ```javascript
+//. > S.ap (Nothing) (Nothing)
+//. Nothing
+//.
+//. > S.ap (Nothing) (Just (9))
+//. Nothing
+//.
+//. > S.ap (Just (Math.sqrt)) (Nothing)
+//. Nothing
+//.
+//. > S.ap (Just (Math.sqrt)) (Just (9))
+//. Just (3)
+//. ```
+function Nothing$prototype$ap(other) {
+  return this;
+}
+function Just$prototype$ap(other) {
+  return other.isJust ? Just (other.value (this.value)) : other;
+}
 
-  //# Maybe#fantasy-land/chain :: Maybe a ~> (a -> Maybe b) -> Maybe b
-  //.
-  //.   - `chain (f) (Nothing)` is equivalent to `Nothing`
-  //.   - `chain (f) (Just (x))` is equivalent to `f (x)`
-  //.
-  //. ```javascript
-  //. > const head = xs => xs.length === 0 ? Nothing : Just (xs[0])
-  //.
-  //. > S.chain (head) (Nothing)
-  //. Nothing
-  //.
-  //. > S.chain (head) (Just ([]))
-  //. Nothing
-  //.
-  //. > S.chain (head) (Just (['foo', 'bar', 'baz']))
-  //. Just ('foo')
-  //. ```
-  function Nothing$prototype$chain(f) {
-    return this;
-  }
-  function Just$prototype$chain(f) {
-    return f (this.value);
-  }
+//# Maybe#fantasy-land/chain :: Maybe a ~> (a -> Maybe b) -> Maybe b
+//.
+//.   - `chain (f) (Nothing)` is equivalent to `Nothing`
+//.   - `chain (f) (Just (x))` is equivalent to `f (x)`
+//.
+//. ```javascript
+//. > const head = xs => xs.length === 0 ? Nothing : Just (xs[0])
+//.
+//. > S.chain (head) (Nothing)
+//. Nothing
+//.
+//. > S.chain (head) (Just ([]))
+//. Nothing
+//.
+//. > S.chain (head) (Just (['foo', 'bar', 'baz']))
+//. Just ('foo')
+//. ```
+function Nothing$prototype$chain(f) {
+  return this;
+}
+function Just$prototype$chain(f) {
+  return f (this.value);
+}
 
-  //# Maybe#fantasy-land/alt :: Maybe a ~> Maybe a -> Maybe a
-  //.
-  //.   - `alt (Nothing) (Nothing)` is equivalent to `Nothing`
-  //.   - `alt (Just (x)) (Nothing)` is equivalent to `Just (x)`
-  //.   - `alt (Nothing) (Just (x))` is equivalent to `Just (x)`
-  //.   - `alt (Just (y)) (Just (x))` is equivalent to `Just (x)`
-  //.
-  //. ```javascript
-  //. > S.alt (Nothing) (Nothing)
-  //. Nothing
-  //.
-  //. > S.alt (Just (1)) (Nothing)
-  //. Just (1)
-  //.
-  //. > S.alt (Nothing) (Just (2))
-  //. Just (2)
-  //.
-  //. > S.alt (Just (4)) (Just (3))
-  //. Just (3)
-  //. ```
-  function Nothing$prototype$alt(other) {
-    return other;
-  }
-  function Just$prototype$alt(other) {
-    return this;
-  }
+//# Maybe#fantasy-land/alt :: Maybe a ~> Maybe a -> Maybe a
+//.
+//.   - `alt (Nothing) (Nothing)` is equivalent to `Nothing`
+//.   - `alt (Just (x)) (Nothing)` is equivalent to `Just (x)`
+//.   - `alt (Nothing) (Just (x))` is equivalent to `Just (x)`
+//.   - `alt (Just (y)) (Just (x))` is equivalent to `Just (x)`
+//.
+//. ```javascript
+//. > S.alt (Nothing) (Nothing)
+//. Nothing
+//.
+//. > S.alt (Just (1)) (Nothing)
+//. Just (1)
+//.
+//. > S.alt (Nothing) (Just (2))
+//. Just (2)
+//.
+//. > S.alt (Just (4)) (Just (3))
+//. Just (3)
+//. ```
+function Nothing$prototype$alt(other) {
+  return other;
+}
+function Just$prototype$alt(other) {
+  return this;
+}
 
-  //# Maybe#fantasy-land/reduce :: Maybe a ~> ((b, a) -> b, b) -> b
-  //.
-  //.   - `reduce (f) (x) (Nothing)` is equivalent to `x`
-  //.   - `reduce (f) (x) (Just (y))` is equivalent to `f (x) (y)`
-  //.
-  //. ```javascript
-  //. > S.reduce (S.concat) ('abc') (Nothing)
-  //. 'abc'
-  //.
-  //. > S.reduce (S.concat) ('abc') (Just ('xyz'))
-  //. 'abcxyz'
-  //. ```
-  function Nothing$prototype$reduce(f, x) {
-    return x;
-  }
-  function Just$prototype$reduce(f, x) {
-    return f (x, this.value);
-  }
+//# Maybe#fantasy-land/reduce :: Maybe a ~> ((b, a) -> b, b) -> b
+//.
+//.   - `reduce (f) (x) (Nothing)` is equivalent to `x`
+//.   - `reduce (f) (x) (Just (y))` is equivalent to `f (x) (y)`
+//.
+//. ```javascript
+//. > S.reduce (S.concat) ('abc') (Nothing)
+//. 'abc'
+//.
+//. > S.reduce (S.concat) ('abc') (Just ('xyz'))
+//. 'abcxyz'
+//. ```
+function Nothing$prototype$reduce(f, x) {
+  return x;
+}
+function Just$prototype$reduce(f, x) {
+  return f (x, this.value);
+}
 
-  //# Maybe#fantasy-land/traverse :: Applicative f => Maybe a ~> (TypeRep f, a -> f b) -> f (Maybe b)
-  //.
-  //.   - `traverse (A) (f) (Nothing)` is equivalent to `of (A) (Nothing)`
-  //.   - `traverse (A) (f) (Just (x))` is equivalent to `map (Just) (f (x))`
-  //.
-  //. ```javascript
-  //. > S.traverse (Array) (S.words) (Nothing)
-  //. [Nothing]
-  //.
-  //. > S.traverse (Array) (S.words) (Just ('foo bar baz'))
-  //. [Just ('foo'), Just ('bar'), Just ('baz')]
-  //. ```
-  function Nothing$prototype$traverse(typeRep, f) {
-    return Z.of (typeRep, this);
-  }
-  function Just$prototype$traverse(typeRep, f) {
-    return Z.map (Just, f (this.value));
-  }
+//# Maybe#fantasy-land/traverse :: Applicative f => Maybe a ~> (TypeRep f, a -> f b) -> f (Maybe b)
+//.
+//.   - `traverse (A) (f) (Nothing)` is equivalent to `of (A) (Nothing)`
+//.   - `traverse (A) (f) (Just (x))` is equivalent to `map (Just) (f (x))`
+//.
+//. ```javascript
+//. > S.traverse (Array) (S.words) (Nothing)
+//. [Nothing]
+//.
+//. > S.traverse (Array) (S.words) (Just ('foo bar baz'))
+//. [Just ('foo'), Just ('bar'), Just ('baz')]
+//. ```
+function Nothing$prototype$traverse(typeRep, f) {
+  return Z.of (typeRep, this);
+}
+function Just$prototype$traverse(typeRep, f) {
+  return Z.map (Just, f (this.value));
+}
 
-  //# Maybe#fantasy-land/extend :: Maybe a ~> (Maybe a -> b) -> Maybe b
-  //.
-  //.   - `extend (f) (Nothing)` is equivalent to `Nothing`
-  //.   - `extend (f) (Just (x))` is equivalent to `Just (f (Just (x)))`
-  //.
-  //. ```javascript
-  //. > S.extend (S.reduce (S.add) (1)) (Nothing)
-  //. Nothing
-  //.
-  //. > S.extend (S.reduce (S.add) (1)) (Just (99))
-  //. Just (100)
-  //. ```
-  function Nothing$prototype$extend(f) {
-    return this;
-  }
-  function Just$prototype$extend(f) {
-    return Just (f (this));
-  }
-
-  return Maybe;
-
-});
+//# Maybe#fantasy-land/extend :: Maybe a ~> (Maybe a -> b) -> Maybe b
+//.
+//.   - `extend (f) (Nothing)` is equivalent to `Nothing`
+//.   - `extend (f) (Just (x))` is equivalent to `Just (f (Just (x)))`
+//.
+//. ```javascript
+//. > S.extend (S.reduce (S.add) (1)) (Nothing)
+//. Nothing
+//.
+//. > S.extend (S.reduce (S.add) (1)) (Just (99))
+//. Just (100)
+//. ```
+function Nothing$prototype$extend(f) {
+  return this;
+}
+function Just$prototype$extend(f) {
+  return Just (f (this));
+}
 
 //. [Fantasy Land]:             v:fantasyland/fantasy-land
 //. [`Z.equals`]:               v:sanctuary-js/sanctuary-type-classes#equals
