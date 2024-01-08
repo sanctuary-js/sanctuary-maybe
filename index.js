@@ -87,24 +87,15 @@
     /* eslint-enable key-spacing */
   };
 
-  if (
-    typeof process !== 'undefined' &&
-    process != null &&
-    process.versions != null &&
-    process.versions.node != null
-  ) {
+  if (globalThis.process?.versions?.node != null) {
     const inspect = Symbol.for ('nodejs.util.inspect.custom');
     Nothing$prototype[inspect] = Nothing$prototype$show;
     Just$prototype[inspect] = Just$prototype$show;
   }
 
   /* c8 ignore start */
-  if (
-    typeof Deno !== 'undefined' &&
-    Deno != null &&
-    typeof Deno.customInspect === 'symbol'
-  ) {
-    const inspect = Deno.customInspect;
+  if (typeof globalThis.Deno?.customInspect === 'symbol') {
+    const inspect = globalThis.Deno.customInspect;
     Nothing$prototype[inspect] = Nothing$prototype$show;
     Just$prototype[inspect] = Just$prototype$show;
   }

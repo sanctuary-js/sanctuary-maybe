@@ -14,7 +14,7 @@
     "/package.json"
   ],
   "engines": {
-    "node": ">=10.12.0"
+    "node": ">=14.0.0"
   },
   "dependencies": {
     "sanctuary-show": "3.0.0",
