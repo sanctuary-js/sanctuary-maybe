@@ -1,16 +1,16 @@
-import assert       from 'assert';
+import {deepStrictEqual as eq} from 'assert';
 
-import laws         from 'fantasy-laws';
-import jsc          from 'jsverify';
-import test         from 'oletus';
-import Either       from 'sanctuary-either';
-import Identity     from 'sanctuary-identity';
-import show         from 'sanctuary-show';
-import Z            from 'sanctuary-type-classes';
-import type         from 'sanctuary-type-identifiers';
-import Useless      from 'sanctuary-useless';
+import laws from 'fantasy-laws';
+import jsc from 'jsverify';
+import test from 'oletus';
+import Either from 'sanctuary-either';
+import Identity from 'sanctuary-identity';
+import show from 'sanctuary-show';
+import Z from 'sanctuary-type-classes';
+import type from 'sanctuary-type-identifiers';
+import Useless from 'sanctuary-useless';
 
-import Maybe        from '../index.js';
+import Maybe from '../index.js';
 
 
 const {Nothing, Just} = Maybe;
@@ -41,187 +41,177 @@ const parseFloat_ = s => Z.reject (isNaN, Just (parseFloat (s)));
 //    testLaws :: String -> Object -> Object -> Undefined
 const testLaws = typeClass => laws => arbs => {
   (Object.keys (laws)).forEach (name => {
-    eq (laws[name].length) (arbs[name].length);
+    eq (laws[name].length, arbs[name].length);
     const prettyName = name.replace (/[A-Z]/g, c => ' ' + c.toLowerCase ());
     test (`${typeClass} laws \x1B[2m›\x1B[0m ${prettyName}`,
           laws[name] (...arbs[name]));
   });
 };
 
-//    eq :: a -> b -> Undefined !
-function eq(actual) {
-  assert.strictEqual (arguments.length, eq.length);
-  return function eq$1(expected) {
-    assert.strictEqual (arguments.length, eq$1.length);
-    assert.strictEqual (show (actual), show (expected));
-    assert.strictEqual (Z.equals (actual, expected), true);
-  };
-}
-
 
 test ('metadata', () => {
-  eq (typeof Nothing) ('object');
-  eq (typeof Just) ('function');
-  eq (Just.length) (1);
+  eq (typeof Nothing, 'object');
+  eq (typeof Just, 'function');
+  eq (Just.length, 1);
 });
 
 test ('tags', () => {
   const just = Just (0);
-  eq (Nothing.isNothing) (true);
-  eq (Nothing.isJust) (false);
-  eq (just.isNothing) (false);
-  eq (just.isJust) (true);
+  eq (Nothing.isNothing, true);
+  eq (Nothing.isJust, false);
+  eq (just.isNothing, false);
+  eq (just.isJust, true);
 });
 
 test ('@@type', () => {
-  eq (type (Nothing)) ('sanctuary-maybe/Maybe@1');
-  eq (type (Just (0))) ('sanctuary-maybe/Maybe@1');
-  eq (type.parse (type (Just (0))))
-     ({namespace: 'sanctuary-maybe', name: 'Maybe', version: 1});
+  eq (type (Nothing), 'sanctuary-maybe/Maybe@1');
+  eq (type (Just (0)), 'sanctuary-maybe/Maybe@1');
+  eq (type.parse (type (Just (0))),
+      {namespace: 'sanctuary-maybe', name: 'Maybe', version: 1});
 });
 
 test ('@@show', () => {
-  eq (show (Nothing)) ('Nothing');
-  eq (show (Just (['foo', 'bar', 'baz']))) ('Just (["foo", "bar", "baz"])');
-  eq (show (Just (Just (Just (-0))))) ('Just (Just (Just (-0)))');
+  eq (show (Nothing), 'Nothing');
+  eq (show (Just (['foo', 'bar', 'baz'])), 'Just (["foo", "bar", "baz"])');
+  eq (show (Just (Just (Just (-0)))), 'Just (Just (Just (-0)))');
 });
 
 test ('Maybe.maybe', () => {
   eq (Maybe.maybe ('Nothing')
                   (a => 'Just (' + show (a) + ')')
-                  (Nothing))
-     ('Nothing');
+                  (Nothing),
+      'Nothing');
   eq (Maybe.maybe ('Nothing')
                   (a => 'Just (' + show (a) + ')')
-                  (Just ([1, 2, 3])))
-     ('Just ([1, 2, 3])');
+                  (Just ([1, 2, 3])),
+      'Just ([1, 2, 3])');
 });
 
 test ('Setoid', () => {
-  eq (Z.Setoid.test (Nothing)) (true);
-  eq (Z.Setoid.test (Just (Useless))) (false);
-  eq (Z.Setoid.test (Just (/(?:)/))) (true);
+  eq (Z.Setoid.test (Nothing), true);
+  eq (Z.Setoid.test (Just (Useless)), false);
+  eq (Z.Setoid.test (Just (/(?:)/)), true);
 });
 
 test ('Ord', () => {
-  eq (Z.Ord.test (Nothing)) (true);
-  eq (Z.Ord.test (Just (Useless))) (false);
-  eq (Z.Ord.test (Just (/(?:)/))) (false);
-  eq (Z.Ord.test (Just (0))) (true);
+  eq (Z.Ord.test (Nothing), true);
+  eq (Z.Ord.test (Just (Useless)), false);
+  eq (Z.Ord.test (Just (/(?:)/)), false);
+  eq (Z.Ord.test (Just (0)), true);
 });
 
 test ('Semigroupoid', () => {
-  eq (Z.Semigroupoid.test (Nothing)) (false);
-  eq (Z.Semigroupoid.test (Just ([]))) (false);
+  eq (Z.Semigroupoid.test (Nothing), false);
+  eq (Z.Semigroupoid.test (Just ([])), false);
 });
 
 test ('Category', () => {
-  eq (Z.Category.test (Nothing)) (false);
-  eq (Z.Category.test (Just ([]))) (false);
+  eq (Z.Category.test (Nothing), false);
+  eq (Z.Category.test (Just ([])), false);
 });
 
 test ('Semigroup', () => {
-  eq (Z.Semigroup.test (Nothing)) (true);
-  eq (Z.Semigroup.test (Just (Useless))) (false);
-  eq (Z.Semigroup.test (Just (0))) (false);
-  eq (Z.Semigroup.test (Just ([]))) (true);
+  eq (Z.Semigroup.test (Nothing), true);
+  eq (Z.Semigroup.test (Just (Useless)), false);
+  eq (Z.Semigroup.test (Just (0)), false);
+  eq (Z.Semigroup.test (Just ([])), true);
 });
 
 test ('Monoid', () => {
-  eq (Z.Monoid.test (Nothing)) (true);
-  eq (Z.Monoid.test (Just (Useless))) (false);
-  eq (Z.Monoid.test (Just (0))) (false);
-  eq (Z.Monoid.test (Just ([]))) (true);
+  eq (Z.Monoid.test (Nothing), true);
+  eq (Z.Monoid.test (Just (Useless)), false);
+  eq (Z.Monoid.test (Just (0)), false);
+  eq (Z.Monoid.test (Just ([])), true);
 });
 
 test ('Group', () => {
-  eq (Z.Group.test (Nothing)) (false);
-  eq (Z.Group.test (Just ([]))) (false);
+  eq (Z.Group.test (Nothing), false);
+  eq (Z.Group.test (Just ([])), false);
 });
 
 test ('Filterable', () => {
-  eq (Z.Filterable.test (Nothing)) (true);
-  eq (Z.Filterable.test (Just (Useless))) (true);
+  eq (Z.Filterable.test (Nothing), true);
+  eq (Z.Filterable.test (Just (Useless)), true);
 });
 
 test ('Functor', () => {
-  eq (Z.Functor.test (Nothing)) (true);
-  eq (Z.Functor.test (Just (Useless))) (true);
+  eq (Z.Functor.test (Nothing), true);
+  eq (Z.Functor.test (Just (Useless)), true);
 });
 
 test ('Bifunctor', () => {
-  eq (Z.Bifunctor.test (Nothing)) (false);
-  eq (Z.Bifunctor.test (Just ([]))) (false);
+  eq (Z.Bifunctor.test (Nothing), false);
+  eq (Z.Bifunctor.test (Just ([])), false);
 });
 
 test ('Profunctor', () => {
-  eq (Z.Profunctor.test (Nothing)) (false);
-  eq (Z.Profunctor.test (Just (Math.sqrt))) (false);
+  eq (Z.Profunctor.test (Nothing), false);
+  eq (Z.Profunctor.test (Just (Math.sqrt)), false);
 });
 
 test ('Apply', () => {
-  eq (Z.Apply.test (Nothing)) (true);
-  eq (Z.Apply.test (Just (Useless))) (true);
+  eq (Z.Apply.test (Nothing), true);
+  eq (Z.Apply.test (Just (Useless)), true);
 });
 
 test ('Applicative', () => {
-  eq (Z.Applicative.test (Nothing)) (true);
-  eq (Z.Applicative.test (Just (Useless))) (true);
+  eq (Z.Applicative.test (Nothing), true);
+  eq (Z.Applicative.test (Just (Useless)), true);
 });
 
 test ('Chain', () => {
-  eq (Z.Chain.test (Nothing)) (true);
-  eq (Z.Chain.test (Just (Useless))) (true);
+  eq (Z.Chain.test (Nothing), true);
+  eq (Z.Chain.test (Just (Useless)), true);
 });
 
 test ('ChainRec', () => {
-  eq (Z.ChainRec.test (Nothing)) (true);
-  eq (Z.ChainRec.test (Just (Useless))) (true);
+  eq (Z.ChainRec.test (Nothing), true);
+  eq (Z.ChainRec.test (Just (Useless)), true);
 });
 
 test ('Monad', () => {
-  eq (Z.Monad.test (Nothing)) (true);
-  eq (Z.Monad.test (Just (Useless))) (true);
+  eq (Z.Monad.test (Nothing), true);
+  eq (Z.Monad.test (Just (Useless)), true);
 });
 
 test ('Alt', () => {
-  eq (Z.Alt.test (Nothing)) (true);
-  eq (Z.Alt.test (Just (Useless))) (true);
+  eq (Z.Alt.test (Nothing), true);
+  eq (Z.Alt.test (Just (Useless)), true);
 });
 
 test ('Plus', () => {
-  eq (Z.Plus.test (Nothing)) (true);
-  eq (Z.Plus.test (Just (Useless))) (true);
+  eq (Z.Plus.test (Nothing), true);
+  eq (Z.Plus.test (Just (Useless)), true);
 });
 
 test ('Alternative', () => {
-  eq (Z.Alternative.test (Nothing)) (true);
-  eq (Z.Alternative.test (Just (Useless))) (true);
+  eq (Z.Alternative.test (Nothing), true);
+  eq (Z.Alternative.test (Just (Useless)), true);
 });
 
 test ('Foldable', () => {
-  eq (Z.Foldable.test (Nothing)) (true);
-  eq (Z.Foldable.test (Just (Useless))) (true);
+  eq (Z.Foldable.test (Nothing), true);
+  eq (Z.Foldable.test (Just (Useless)), true);
 });
 
 test ('Traversable', () => {
-  eq (Z.Traversable.test (Nothing)) (true);
-  eq (Z.Traversable.test (Just (Useless))) (true);
+  eq (Z.Traversable.test (Nothing), true);
+  eq (Z.Traversable.test (Just (Useless)), true);
 });
 
 test ('Extend', () => {
-  eq (Z.Extend.test (Nothing)) (true);
-  eq (Z.Extend.test (Just (Useless))) (true);
+  eq (Z.Extend.test (Nothing), true);
+  eq (Z.Extend.test (Just (Useless)), true);
 });
 
 test ('Comonad', () => {
-  eq (Z.Comonad.test (Nothing)) (false);
-  eq (Z.Comonad.test (Just (Identity (0)))) (false);
+  eq (Z.Comonad.test (Nothing), false);
+  eq (Z.Comonad.test (Just (Identity (0))), false);
 });
 
 test ('Contravariant', () => {
-  eq (Z.Contravariant.test (Nothing)) (false);
-  eq (Z.Contravariant.test (Just (Math.sqrt))) (false);
+  eq (Z.Contravariant.test (Nothing), false);
+  eq (Z.Contravariant.test (Just (Math.sqrt)), false);
 });
 
 testLaws ('Setoid') (laws.Setoid) ({
