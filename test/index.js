@@ -1,4 +1,4 @@
-import {deepStrictEqual as eq} from 'assert';
+import {deepStrictEqual as eq} from 'node:assert';
 
 import laws from 'fantasy-laws';
 import jsc from 'jsverify';
