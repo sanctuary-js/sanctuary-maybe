@@ -44,7 +44,7 @@ const testLaws = typeClass => laws => arbs => {
   (Object.keys (laws)).forEach (name => {
     eq (laws[name].length, arbs[name].length);
     const prettyName = name.replace (/[A-Z]/g, c => ' ' + c.toLowerCase ());
-    test (`${typeClass} laws \x1B[2m›\x1B[0m ${prettyName}`,
+    test (`${typeClass} laws \x1B[2m›\x1B[22m ${prettyName}`,
           laws[name] (...arbs[name]));
   });
 };
